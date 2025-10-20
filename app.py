@@ -165,12 +165,14 @@ def generate_gemini_response(user_question, context_fact_object, history):
     """
     
     try:
-        # Usando o modelo que sabemos que funciona para sua conta
-        model = genai.GenerativeModel('gemini-2.0-flash-lite-001') 
+        print("-> Chamando a API do Gemini com o modelo 'gemini-2.5-flash'...")
+        model = genai.GenerativeModel('gemini-2.5-flash')
         response = model.generate_content(prompt)
+        print("-> Resposta da API do Gemini recebida com sucesso.")
         return response.text
     except Exception as e:
         print(f"ERRO CRÍTICO ao chamar a API do Gemini: {e}")
+        traceback.print_exc() # Adiciona o traceback completo para depuração
         return "Desculpe, estou com um problema para me conectar à minha inteligência. Tente novamente mais tarde."
 
 # --- ROTAS DA APLICAÇÃO ---
