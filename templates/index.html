@@ -6,7 +6,11 @@
     <title>Assistente de Onboarding Interativo</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+ feat/futuristic-redesign
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+ main
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
@@ -14,32 +18,28 @@
     <img src="/static/logo.png" alt="Logo" id="logo-top-left">
     <div id="main-content" class="hidden">
         <div class="container">
-            <div class="container-inner">
-                <div id="video-player-container">
-                    <div id="youtubePlayer"></div>
-                </div>
-                <h1 id="videoTitle"></h1>
+            <div id="video-player-container">
+                <div id="youtubePlayer"></div>
+            </div>
+            <h1 id="videoTitle"></h1>
 
-                <div id="finalSection" class="hidden">
-                     <h2>Onboarding Concluído!</h2>
-                     <p>Parabéns, você finalizou a primeira parte da sua integração...</p>
-                     <a href="#" id="proofLink" class="button-link" target="_blank" rel="noopener noreferrer">Acessar a Prova</a>
-                </div>
+            <div id="finalSection" class="hidden">
+                 <h2>Onboarding Concluído!</h2>
+                 <p>Parabéns, você finalizou a primeira parte da sua integração...</p>
+                 <a href="#" id="proofLink" class="button-link" target="_blank" rel="noopener noreferrer">Acessar a Prova</a>
+            </div>
 
-                <p id="status" class="status"></p>
+            <p id="status" class="status"></p>
 
-                <div class="chat-log-container hidden">
-                    <div id="chatLog"></div>
-                </div>
+            <div class="chat-log-container hidden">
+                <div id="chatLog"></div>
             </div>
         </div>
     </div>
     
     <div id="learning-trail" class="hidden">
-        <div class="trail-inner">
-            <h2>Sua Trilha</h2>
-            <ol id="trail-list"></ol>
-        </div>
+        <h2>Sua Trilha</h2>
+        <ol id="trail-list"></ol>
     </div>
 
     <div id="assistant-container" class="assistant-centered">
