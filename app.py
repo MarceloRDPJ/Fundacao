@@ -19,6 +19,7 @@ CORS(app)
 
 # --- CONFIGURAÇÃO DO GOOGLE GEMINI ---
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+print(f"--- DEBUG: Chave da API do Gemini carregada: {GEMINI_API_KEY} ---") # Log para depuração
 APPS_SCRIPT_URL = os.getenv("APPS_SCRIPT_URL")
 
 SCOPES = [
