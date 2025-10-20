@@ -146,14 +146,13 @@ submitNameBtn.addEventListener('click', () => {
 
 function startJourney() {
     window.speechSynthesis.cancel();
-    const assistantLogo = assistantContainer.querySelector('.assistant-logo-centered');
-    if (assistantLogo) assistantLogo.classList.add('hidden');
     assistantBubble.classList.add('hidden');
     assistantContainer.classList.remove('assistant-centered');
     assistantContainer.classList.add('assistant-corner');
-    mainContent.classList.remove('hidden');
-    logoTopLeft.classList.remove('hidden');
-    learningTrail.classList.remove('hidden');
+
+    // Mostra o layout principal de duas colunas
+    document.getElementById('app-wrapper').classList.remove('hidden');
+
     playNextVideo();
 }
 

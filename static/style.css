@@ -1,3 +1,31 @@
+ feat-futuristic-redesign
+/* Logo no canto superior esquerdo */
+#logo-top-left {
+    position: fixed;
+    top: 25px;
+    left: 30px;
+    width: 120px;
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+/* --- GERAL E LAYOUT --- */
+:root {
+    --background-dark: #1a1a2e;
+    --background-light: #2a2a3e;
+    --primary-blue: #007bff;
+    --primary-blue-darker: #0056b3;
+    --text-primary: #f0f0f0;
+    --text-secondary: #f0f0f0a0;
+    --border-color: #4a4a6a;
+    --success-green: #28a745;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--background-dark);
+    color: var(--text-primary);
+
 /* --- GERAL E LAYOUT --- */
 :root {
     --brand-blue: #01a4e9;
@@ -12,10 +40,11 @@ feat/futuristic-redesign
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     background-color: #1a1a2e; /* Grafite/Carvão */
     color: #f0f0f0; /* Branco suave */
-=======
+
     font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
     background-color: var(--dark-bg);
     color: var(--light-text);
+ main
  main
     display: flex;
     justify-content: center;
@@ -24,8 +53,25 @@ feat/futuristic-redesign
     margin: 0;
     padding: 20px;
     overflow-x: hidden;
+ feat-futuristic-redesign
+    box-sizing: border-box;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* --- LAYOUT PRINCIPAL (APP WRAPPER) --- */
+#app-wrapper {
+    display: flex;
+    width: 100%;
+    max-width: 1400px;
+    gap: 30px;
+    align-items: flex-start;
+    animation: fadeIn 0.5s ease-in-out;
+
  feat/futuristic-redesign
-=======
+
 }
 
 #logo-top-left {
@@ -35,10 +81,37 @@ feat/futuristic-redesign
     width: 120px;
     z-index: 1000;
  main
+ main
 }
 
+#main-content {
+    flex: 3;
+    display: flex;
+    flex-direction: column;
+    min-width: 0; /* Previne que o flex item cresça demais */
+}
+
+#learning-trail {
+    flex: 1;
+    position: sticky;
+    top: 30px;
+    min-width: 280px; /* Garante que a trilha não fique muito estreita */
+}
+
+/* --- CONTAINER DO CONTEÚDO PRINCIPAL --- */
 #main-content .container {
     text-align: center;
+ feat-futuristic-redesign
+    background-color: var(--background-light);
+    padding: 30px 40px;
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
  feat/futuristic-redesign
     background-color: #2a2a3e; /* Tom mais claro para o container */
     padding: 30px 40px;
@@ -63,17 +136,40 @@ feat/futuristic-redesign
 
 .hidden {
     display: none;
+ main
 }
 
-/* --- PLAYER DE VÍDEO --- */
+/* --- PLAYER DE VÍDEO (RESPONSIVO) --- */
 #video-player-container {
     position: relative;
     width: 100%;
+ feat-futuristic-redesign
+    padding-top: 56.25%; /* Proporção 16:9 */
+
     padding-top: 56.25%; /* 16:9 Aspect Ratio */
+ main
     background-color: #000;
     border-radius: 10px;
     overflow: hidden;
     margin-bottom: 20px;
+ feat-futuristic-redesign
+    border: 2px solid var(--primary-blue);
+    box-shadow: 0 0 15px rgba(0, 123, 255, 0.4);
+}
+
+#youtubePlayer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#videoTitle {
+    color: var(--primary-blue);
+    font-weight: 600;
+    font-size: 22px;
+
 }
 
 #video-player-container iframe {
@@ -88,6 +184,7 @@ feat/futuristic-redesign
     color: var(--brand-blue);
     font-weight: 700;
     font-size: 24px;
+ main
     margin-bottom: 20px;
 }
 
@@ -96,7 +193,11 @@ feat/futuristic-redesign
     position: fixed;
     display: flex;
     z-index: 999;
+ feat-futuristic-redesign
+    transition: all 1.2s cubic-bezier(0.77,0,0.175,1);
+
     transition: all 1s ease-in-out;
+ main
 }
 
 .assistant-centered {
@@ -109,6 +210,25 @@ feat/futuristic-redesign
 
 .assistant-corner {
     bottom: 20px;
+ feat-futuristic-redesign
+    right: 30px;
+    align-items: flex-end;
+    flex-direction: row-reverse;
+    gap: 15px;
+}
+
+/* --- BALÃO DE FALA --- */
+.speech-bubble {
+    width: 380px;
+    background: #1a2430;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    position: relative;
+    text-align: center;
+    transition: opacity 0.3s, transform 0.3s;
+    border: 1px solid #007bff88;
+
     right: 20px;
     align-items: flex-end;
 }
@@ -124,9 +244,66 @@ feat/futuristic-redesign
   feat/futuristic-redesign
     transition: opacity 0.3s, transform 0.3s;
     border: 1px solid #00aaff44;
+ main
     color: #e0e0e0;
     font-weight: 500;
 }
+
+ feat-futuristic-redesign
+.speech-bubble::after { /* A "cauda" do balão */
+    content: '';
+    position: absolute;
+    border-style: solid;
+    border-color: #1a2430 transparent transparent transparent;
+}
+.assistant-centered .speech-bubble::after {
+    border-width: 12px;
+    bottom: -24px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+.assistant-corner .speech-bubble::after {
+    border-width: 10px;
+    bottom: 15px;
+    right: -10px;
+    transform: rotate(90deg);
+}
+
+.speech-bubble.hidden {
+    opacity: 0;
+    transform: scale(0.9);
+    pointer-events: none;
+}
+
+/* Formulário de nome */
+.inline-form { display: flex; gap: 8px; margin-top: 15px; }
+.inline-form input {
+    flex-grow: 1;
+    background-color: #0d1a26;
+    border: 1px solid var(--primary-blue);
+    color: #eeeeee;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 15px;
+    transition: all 0.3s ease;
+}
+.inline-form input:focus {
+    border-color: #00aaff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+    outline: none;
+}
+
+/* --- AURA DA ASSISTENTE --- */
+@keyframes subtle-pulse {
+    0% { box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(0, 123, 255, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(0, 123, 255, 0); }
+}
+.siri-aura {
+    width: 64px; height: 64px; border-radius: 50%;
+    background-color: var(--primary-blue);
+    cursor: default;
+    transition: transform 0.3s, box-shadow 0.3s;
 
 /* --- Animações --- */
 @keyframes fadeIn {
@@ -235,14 +412,28 @@ main
 
 .status.finalizado {
     color: #f0f0f0;
+ main
 }
+.siri-aura.interactive { cursor: pointer; animation: subtle-pulse 2s infinite; }
+.siri-aura.interactive:hover { transform: scale(1.1); box-shadow: 0 0 15px rgba(0, 123, 255, 0.6); }
+.siri-aura.thinking { animation: subtle-pulse 1s infinite; }
+
+ feat-futuristic-redesign
+/* --- CONTEÚDO DA JORNADA --- */
+.status { margin-top: 10px; color: var(--primary-blue); font-weight: 500; }
+
+.chat-log-container {
+    margin-top: 16px; background-color: var(--background-dark);
+    border: 1px solid var(--border-color); border-radius: 12px;
+    padding: 16px; min-height: 150px; max-height: 300px;
+    width: 100%; overflow-y: auto; text-align: left;
 
 .chat-log-container {
     margin-top: 16px;
     background-color: #1a1a2e;
     border: 1px solid #4a4a6a;
     border-radius: 12px;
-=======
+
     color: var(--brand-blue);
     font-weight: 500;
 }
@@ -266,7 +457,7 @@ main
     word-wrap: break-word;
     max-width: 85%;
     line-height: 1.5;
-=======
+
     transition: all 0.3s ease-in-out;
  main
 }
@@ -290,6 +481,88 @@ main
     border-radius: 8px;
     margin-bottom: 10px;
  main
+ main
+}
+#chatLog p { margin: 0 0 10px 0; padding: 10px 14px; border-radius: 18px; word-wrap: break-word; max-width: 85%; line-height: 1.5; }
+#chatLog .user-message { background-color: var(--primary-blue); color: white !important; margin-left: auto; border-bottom-right-radius: 4px; }
+#chatLog .bot-message { background-color: #3a3a5a; color: var(--text-primary) !important; margin-right: auto; border-bottom-left-radius: 4px; }
+
+ feat-futuristic-redesign
+/* --- BOTÕES --- */
+.button-link, .speech-bubble button, #qaSection button {
+    background-color: var(--primary-blue); color: white; border: none;
+    padding: 12px 28px; font-size: 16px; font-weight: 600;
+    border-radius: 8px; cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+.inline-form button { padding: 10px 20px; font-size: 15px; }
+.button-link:hover, .speech-bubble button:hover, #qaSection button:hover {
+    background-color: var(--primary-blue-darker);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
+}
+
+/* Seção Final */
+#finalSection { margin: 20px 0; padding: 30px; background-color: transparent; border-radius: 8px; }
+
+/* --- TRILHA DE APRENDIZAGEM --- */
+#learning-trail {
+    background: var(--background-light); padding: 20px 25px; border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2); border: 1px solid var(--border-color);
+    z-index: 1;
+}
+#learning-trail h2 { margin: 0 0 15px 0; color: var(--text-primary); font-weight: 600; text-align: center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+#trail-list { list-style: none; padding: 0; margin: 0; }
+.trail-item { padding: 12px 0 12px 40px; position: relative; color: var(--text-secondary); font-weight: 500; transition: all 0.3s ease; border-bottom: 1px solid #4a4a6a44; }
+.trail-item:last-child { border-bottom: none; }
+.trail-item::before {
+    content: ''; position: absolute; left: 0; top: 50%;
+    transform: translateY(-50%); width: 24px; height: 24px;
+    border-radius: 50%; background-color: transparent;
+    border: 2px solid var(--primary-blue); transition: all 0.3s ease;
+}
+.trail-item.active { color: white; font-weight: 700; }
+.trail-item.active::before { background-color: var(--primary-blue); border-color: var(--primary-blue); }
+.trail-item.completed::before {
+    content: '✔'; background-color: var(--success-green); border-color: var(--success-green);
+    color: white; font-size: 16px; display: flex;
+    align-items: center; justify-content: center;
+}
+
+/* --- BARRA DE ROLAGEM CUSTOMIZADA --- */
+.chat-log-container::-webkit-scrollbar { width: 8px; }
+.chat-log-container::-webkit-scrollbar-track { background: var(--background-dark); border-radius: 4px; }
+.chat-log-container::-webkit-scrollbar-thumb { background-color: var(--primary-blue); border-radius: 4px; border: 2px solid var(--background-dark); }
+.chat-log-container::-webkit-scrollbar-thumb:hover { background-color: var(--primary-blue-darker); }
+
+/* --- ANIMAÇÕES --- */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* --- MEDIA QUERIES (RESPONSIVIDADE) --- */
+@media (max-width: 1200px) {
+    #app-wrapper {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+    #learning-trail {
+        position: static; /* Remove o 'sticky' em telas menores */
+        width: 100%;
+        max-width: 700px; /* Garante que a trilha não fique larga demais */
+    }
+    #main-content {
+        width: 100%;
+        max-width: 700px;
+    }
+}
+
+@media (max-width: 768px) {
+    body { padding: 15px; }
+    #logo-top-left { top: 15px; left: 15px; width: 100px; }
+    #main-content .container { padding: 20px; }
+    #videoTitle { font-size: 18px; }
+    .speech-bubble { width: auto; max-width: 320px; }
+    .assistant-corner { right: 15px; bottom: 15px; }
 }
 
 #chatLog .bot-message {
@@ -379,7 +652,7 @@ button:hover, .button-link:hover {
     padding: 5px 8px;
     border-radius: 4px;
     font-family: 'Courier New', Courier, monospace;
-=======
+
 .inline-form input {
     flex-grow: 1;
     background-color: var(--dark-bg);
@@ -492,4 +765,5 @@ button:hover, .button-link:hover {
     opacity: 0.4;
     text-decoration: line-through;
 }
+ main
  main
