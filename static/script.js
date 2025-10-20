@@ -94,11 +94,13 @@ function generateUsername(fullName) {
 function copyCredentials(username, buttonElement) {
     const textToCopy = `Usuário: ${username}\nSenha: ${DEFAULT_PASSWORD}`;
     navigator.clipboard.writeText(textToCopy).then(() => {
-        const originalText = buttonElement.innerHTML;
-        buttonElement.innerHTML = "Copiado!";
+        buttonElement.innerHTML = '✔'; // Ícone de "check"
+        buttonElement.classList.add('clicked');
         buttonElement.disabled = true;
+
         setTimeout(() => {
-            buttonElement.innerHTML = originalText;
+            buttonElement.innerHTML = '📋'; // Ícone de prancheta
+            buttonElement.classList.remove('clicked');
             buttonElement.disabled = false;
         }, 2000);
     }).catch(err => {
@@ -148,19 +150,30 @@ submitNameBtn.addEventListener('click', () => {
 
     assistantBubble.innerHTML = `
         <p>${credentialsMessage}</p>
-        <div class="credentials-box">
+        <div class="credentials-box" style="opacity: 0; transform: translateY(10px); transition: all 0.5s ease-out;">
             <div class="credential-item">
-                <span>Usuário:</span>
+                <span>Usuário</span>
                 <code>${generatedUser}</code>
             </div>
             <div class="credential-item">
-                <span>Senha Padrão:</span>
-                <code>${DEFAULT_PASSWORD}</code>
-                <button class="copy-btn" id="copy-credentials-btn" title="Copiar usuário e senha">📋</button>
+                <span>Senha Padrão</span>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <code>${DEFAULT_PASSWORD}</code>
+                    <button class="copy-btn" id="copy-credentials-btn" title="Copiar usuário e senha">📋</button>
+                </div>
             </div>
         </div>
         <button id="ack-credentials-btn">Entendi, anotei minhas credenciais</button>
     `;
+
+    // Adiciona um pequeno atraso para a animação de fade-in
+    setTimeout(() => {
+        const box = assistantBubble.querySelector('.credentials-box');
+        if (box) {
+            box.style.opacity = '1';
+            box.style.transform = 'translateY(0)';
+        }
+    }, 100);
     speak(credentialsMessage);
 
     document.getElementById('copy-credentials-btn').addEventListener('click', function() {

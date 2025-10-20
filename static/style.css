@@ -193,6 +193,66 @@ body {
     outline: none;
 }
 
+/* --- TELA DE CREDENCIAIS --- */
+.credentials-box {
+    background-color: #0D1A26;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px 0;
+    text-align: left;
+}
+
+.credential-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 15px;
+}
+.credential-item:last-child {
+    border-bottom: none;
+}
+
+.credential-item span {
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.credential-item code {
+    font-family: 'Courier New', Courier, monospace;
+    background-color: #0A0A1A;
+    padding: 5px 10px;
+    border-radius: 6px;
+    color: var(--primary-blue);
+    font-weight: 600;
+}
+
+.copy-btn {
+    background: none;
+    border: 1px solid var(--primary-blue);
+    color: var(--primary-blue);
+    padding: 8px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+    transition: all 0.2s ease;
+}
+
+.copy-btn:hover {
+    background-color: rgba(0, 191, 255, 0.1);
+    transform: scale(1.05);
+}
+
+.copy-btn.clicked {
+    background-color: var(--success-green);
+    border-color: var(--success-green);
+    color: white;
+    transform: scale(1);
+}
+
 /* --- AURA DA ASSISTENTE --- */
 @keyframes aura-pulse {
     0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 191, 255, 0.7); }
@@ -404,5 +464,15 @@ body {
     #finalSection .button-link {
         padding: 12px 30px;
         font-size: 16px;
+    }
+
+    /* Ajustes na tela de credenciais para telas menores */
+    .credentials-box {
+        padding: 15px;
+    }
+    .credential-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
     }
 }
