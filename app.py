@@ -19,7 +19,6 @@ CORS(app)
 
 # --- CONFIGURAÇÃO DO GOOGLE GEMINI ---
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-print(f"--- DEBUG: Chave da API do Gemini carregada: {GEMINI_API_KEY} ---") # Log para depuração
 APPS_SCRIPT_URL = os.getenv("APPS_SCRIPT_URL")
 
 SCOPES = [
@@ -31,9 +30,11 @@ GOOGLE_CREDENTIALS_PATH = os.getenv("GOOGLE_CREDENTIALS_PATH")
 SHEET_ID = '17S3BJeOwmjGnBo4IkbFvQvqVqjdLadB9xMBac9vTxtA'
 
 if GEMINI_API_KEY:
+    # Passa a chave da API diretamente para a configuração
     genai.configure(api_key=GEMINI_API_KEY)
+    print("-> Chave da API do Gemini configurada com sucesso.")
 else:
-    print("ERRO: Chave GEMINI_API_KEY não encontrada no ambiente.")
+    print("ERRO CRÍTICO: A variável de ambiente GOOGLE_API_KEY não foi encontrada.")
 
 EMBEDDING_MODEL = "models/text-embedding-004"
 

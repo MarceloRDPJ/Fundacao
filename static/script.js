@@ -202,13 +202,15 @@ function onPlayerStateChange(event) {
     if (event.data === YT.PlayerState.ENDED) {
         forceIframeSize(); // Garante que o iframe mantenha o tamanho correto
         status.textContent = "Status: Vídeo concluído.";
+        siriAura.classList.remove('interactive'); // Desativa a aura por padrão
 
         //Verifica se o vídeo atual é o último da playlist
         const isLastVideo = currentVideoIndex === playlist.length - 1;
 
         if (isLastVideo) {
-            // Se for o último vídeo, mostra o prompt de Q&A completo
+            // Se for o último vídeo, mostra o prompt de Q&A completo e ativa a aura
             updateAssistantBubble("Ficou com alguma dúvida durante a Integração?", "prompt");
+            siriAura.classList.add('interactive');
         } else {
             // Se não for o último, mostra apenas uma confirmação para continuar
             updateAssistantBubble("Tudo certo? Clique abaixo para ir ao próximo tópico da integração.", "confirm_continue");
@@ -416,12 +418,10 @@ function getAnswerFromAI(question) {
     });
 }
 
-// --- INTERAÇÃO CONSTANTE COM A ASSISTENTE ---
+// A interação agora é controlada pela classe 'interactive'
 siriAura.addEventListener('click', () => {
-    // Só permite abrir o chat se a jornada já começou (assistente no canto) ou se a integração terminou
-    if (assistantContainer.classList.contains('assistant-corner') || assistantContainer.classList.contains('assistant-centered') && finalSection.classList.contains('hidden') === false) {
+    if (siriAura.classList.contains('interactive')) {
         assistantBubble.classList.toggle('hidden');
-        // Se o balão está sendo aberto e o chat ainda não foi criado, cria.
         if (!assistantBubble.classList.contains('hidden') && !document.getElementById('qaSection')) {
             openChatInterface();
         }
