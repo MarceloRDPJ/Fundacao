@@ -221,19 +221,22 @@ function onPlayerStateChange(event) {
 
 // --- FUNÇÕES DE CONTROLE DE FLUXO E UI ---
 function finishOnboarding() {
-    // Esconde os elementos relacionados ao vídeo
+    // Esconde os elementos da UI de vídeo/assistente de forma robusta
     const videoPlayerContainer = document.getElementById('video-player-container');
-    if (videoPlayerContainer) videoPlayerContainer.classList.add('hidden');
-    if (videoTitle) videoTitle.classList.add('hidden');
-    if (learningTrail) learningTrail.classList.add('hidden');
-    if (status) status.classList.add('hidden'); // Oculta a mensagem de status
-    if (assistantContainer) assistantContainer.classList.add('hidden'); // Oculta a assistente
+    const videoTitle = document.getElementById('videoTitle');
+    const learningTrail = document.getElementById('learning-trail');
+    const status = document.getElementById('status');
+    const assistantContainer = document.getElementById('assistant-container');
 
-    // Mostra a seção final
+    if (videoPlayerContainer) videoPlayerContainer.style.display = 'none';
+    if (videoTitle) videoTitle.style.display = 'none';
+    if (learningTrail) learningTrail.style.display = 'none';
+    if (status) status.style.display = 'none';
+
+    // Garante que a seção final seja exibida corretamente com seu estilo flex
     finalSection.classList.remove('hidden');
+    finalSection.style.display = 'flex'; // O CSS define 'display: flex' para o layout
     proofLink.href = GOOGLE_DRIVE_LINK;
-
-    // A assistente não é mais necessária, então não a movemos nem atualizamos
 }
 
 function playNextVideo() {
