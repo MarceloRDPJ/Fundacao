@@ -289,29 +289,43 @@ body {
 
 /* Seção Final */
 #finalSection {
-    margin: 20px 0;
-    padding: 30px;
-    background-color: transparent;
-    border-radius: 8px;
+    padding: 40px;
+    background: linear-gradient(145deg, var(--background-light), #1a1a4a);
+    border-radius: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 15px; /* Espaçamento entre os itens */
+    gap: 20px;
     text-align: center;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 8px 30px rgba(0, 191, 255, 0.1);
+    max-width: 700px;
+    width: 100%;
+    margin: auto;
+    box-sizing: border-box;
+    animation: fadeIn 1s ease-in-out;
 }
 
 #finalSection h2 {
-    font-size: 24px;
+    font-size: 32px;
     color: var(--primary-blue);
-    margin-bottom: 5px;
+    margin-bottom: 10px;
+    font-weight: 700;
 }
 
 #finalSection p {
-    font-size: 16px;
+    font-size: 18px;
     color: var(--text-secondary);
-    max-width: 450px;
-    margin-bottom: 20px;
+    max-width: 500px;
+    margin-bottom: 25px;
+    line-height: 1.6;
+}
+
+#finalSection .button-link {
+    padding: 15px 40px;
+    font-size: 18px;
+    box-shadow: 0 5px 20px rgba(0, 191, 255, 0.25);
 }
 
 /* --- TRILHA DE APRENDIZAGEM --- */
@@ -377,4 +391,18 @@ body {
     #videoTitle { font-size: 18px; }
     .speech-bubble { width: auto; max-width: 320px; }
     .assistant-corner { right: 15px; bottom: 15px; }
+
+    #finalSection {
+        padding: 25px;
+    }
+    #finalSection h2 {
+        font-size: 26px;
+    }
+    #finalSection p {
+        font-size: 16px;
+    }
+    #finalSection .button-link {
+        padding: 12px 30px;
+        font-size: 16px;
+    }
 }
