@@ -226,16 +226,14 @@ function finishOnboarding() {
     if (videoPlayerContainer) videoPlayerContainer.classList.add('hidden');
     if (videoTitle) videoTitle.classList.add('hidden');
     if (learningTrail) learningTrail.classList.add('hidden');
+    if (status) status.classList.add('hidden'); // Oculta a mensagem de status
+    if (assistantContainer) assistantContainer.classList.add('hidden'); // Oculta a assistente
 
     // Mostra a seção final
     finalSection.classList.remove('hidden');
     proofLink.href = GOOGLE_DRIVE_LINK;
 
-    // Move a assistente para o centro e exibe uma mensagem final
-    assistantContainer.classList.remove('assistant-corner');
-    assistantContainer.classList.add('assistant-centered');
-    updateAssistantBubble("Parabéns por concluir a integração! Se ainda tiver alguma dúvida, estou à disposição.", "final_prompt");
-    assistantBubble.classList.remove('hidden');
+    // A assistente não é mais necessária, então não a movemos nem atualizamos
 }
 
 function playNextVideo() {
