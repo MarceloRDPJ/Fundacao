@@ -288,7 +288,31 @@ body {
 }
 
 /* Seção Final */
-#finalSection { margin: 20px 0; padding: 30px; background-color: transparent; border-radius: 8px; }
+#finalSection {
+    margin: 20px 0;
+    padding: 30px;
+    background-color: transparent;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px; /* Espaçamento entre os itens */
+    text-align: center;
+}
+
+#finalSection h2 {
+    font-size: 24px;
+    color: var(--primary-blue);
+    margin-bottom: 5px;
+}
+
+#finalSection p {
+    font-size: 16px;
+    color: var(--text-secondary);
+    max-width: 450px;
+    margin-bottom: 20px;
+}
 
 /* --- TRILHA DE APRENDIZAGEM --- */
 #learning-trail {
