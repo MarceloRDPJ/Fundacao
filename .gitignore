@@ -15,3 +15,12 @@ env/
 
 # Flask
 instance/
+
+# Logs
+*.log
+
+# Generated files
+knowledge_base_com_embeddings.json
+
+# Jules
+jules-scratch/
