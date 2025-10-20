@@ -35,18 +35,47 @@ const MAX_HISTORY_LENGTH = 6;
 let ptBrVoices = [];
 
 // --- LÓGICA DE VOZ DO NAVEGADOR ---
+let celineVoice = null;
+
 function loadVoices() {
-    ptBrVoices = window.speechSynthesis.getVoices().filter(voice => voice.lang === 'pt-BR');
+    const allVoices = window.speechSynthesis.getVoices();
+    const ptBrVoices = allVoices.filter(voice => voice.lang === 'pt-BR');
+
+    // Tenta encontrar a voz "Google português do Brasil"
+    celineVoice = ptBrVoices.find(voice => voice.name === 'Google português do Brasil');
+
+    // Se não encontrar, tenta encontrar qualquer outra voz feminina de alta qualidade
+    if (!celineVoice) {
+        celineVoice = ptBrVoices.find(voice => voice.name.includes('Female') || voice.name.includes('Feminino'));
+    }
+
+    // Se ainda assim não encontrar, usa a primeira voz pt-BR disponível
+    if (!celineVoice && ptBrVoices.length > 0) {
+        celineVoice = ptBrVoices[0];
+    }
 }
-loadVoices();
+// Tenta carregar as vozes repetidamente até que estejam disponíveis
+const voiceInterval = setInterval(() => {
+    loadVoices();
+    if (celineVoice) {
+        clearInterval(voiceInterval);
+    }
+}, 100);
+
 if (window.speechSynthesis.onvoiceschanged !== undefined) {
     window.speechSynthesis.onvoiceschanged = loadVoices;
 }
 function speak(text, onEndCallback) {
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
-    if (ptBrVoices.length > 0) { utterance.voice = ptBrVoices[0]; }
+
+    // Usa a voz da Celine se encontrada, senão usa a configuração padrão do navegador
+    if (celineVoice) {
+        utterance.voice = celineVoice;
+    }
+
     utterance.lang = 'pt-BR';
+    utterance.rate = 1.1; // Aumenta a velocidade da fala em 10%
     utterance.onend = () => { if (onEndCallback) onEndCallback(); };
     window.speechSynthesis.speak(utterance);
 }
@@ -237,6 +266,31 @@ function finishOnboarding() {
     finalSection.classList.remove('hidden');
     finalSection.style.display = 'flex'; // O CSS define 'display: flex' para o layout
     proofLink.href = GOOGLE_DRIVE_LINK;
+
+    // Dispara o efeito de confete
+    const end = Date.now() + (3 * 1000);
+    const colors = ['#00BFFF', '#1E90FF', '#0000CD'];
+
+    (function frame() {
+        confetti({
+            particleCount: 3,
+            angle: 60,
+            spread: 55,
+            origin: { x: 0 },
+            colors: colors
+        });
+        confetti({
+            particleCount: 3,
+            angle: 120,
+            spread: 55,
+            origin: { x: 1 },
+            colors: colors
+        });
+
+        if (Date.now() < end) {
+            requestAnimationFrame(frame);
+        }
+    }());
 }
 
 function playNextVideo() {
