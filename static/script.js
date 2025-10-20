@@ -146,14 +146,13 @@ submitNameBtn.addEventListener('click', () => {
 
 function startJourney() {
     window.speechSynthesis.cancel();
-    const assistantLogo = assistantContainer.querySelector('.assistant-logo-centered');
-    if (assistantLogo) assistantLogo.classList.add('hidden');
     assistantBubble.classList.add('hidden');
     assistantContainer.classList.remove('assistant-centered');
     assistantContainer.classList.add('assistant-corner');
-    mainContent.classList.remove('hidden');
-    logoTopLeft.classList.remove('hidden');
-    learningTrail.classList.remove('hidden');
+
+    // Mostra o layout principal de duas colunas
+    document.getElementById('app-wrapper').classList.remove('hidden');
+
     playNextVideo();
 }
 
@@ -202,13 +201,15 @@ function onPlayerStateChange(event) {
     if (event.data === YT.PlayerState.ENDED) {
         forceIframeSize(); // Garante que o iframe mantenha o tamanho correto
         status.textContent = "Status: Vídeo concluído.";
+        siriAura.classList.remove('interactive'); // Desativa a aura por padrão
 
         //Verifica se o vídeo atual é o último da playlist
         const isLastVideo = currentVideoIndex === playlist.length - 1;
 
         if (isLastVideo) {
-            // Se for o último vídeo, mostra o prompt de Q&A completo
+            // Se for o último vídeo, mostra o prompt de Q&A completo e ativa a aura
             updateAssistantBubble("Ficou com alguma dúvida durante a Integração?", "prompt");
+            siriAura.classList.add('interactive');
         } else {
             // Se não for o último, mostra apenas uma confirmação para continuar
             updateAssistantBubble("Tudo certo? Clique abaixo para ir ao próximo tópico da integração.", "confirm_continue");
@@ -219,44 +220,36 @@ function onPlayerStateChange(event) {
 }
 
 // --- FUNÇÕES DE CONTROLE DE FLUXO E UI ---
+function finishOnboarding() {
+    // Esconde os elementos relacionados ao vídeo
+    const videoPlayerContainer = document.getElementById('video-player-container');
+    if (videoPlayerContainer) videoPlayerContainer.classList.add('hidden');
+    if (videoTitle) videoTitle.classList.add('hidden');
+    if (learningTrail) learningTrail.classList.add('hidden');
+
+    // Mostra a seção final
+    finalSection.classList.remove('hidden');
+    proofLink.href = GOOGLE_DRIVE_LINK;
+
+    // Move a assistente para o centro e exibe uma mensagem final
+    assistantContainer.classList.remove('assistant-corner');
+    assistantContainer.classList.add('assistant-centered');
+    updateAssistantBubble("Parabéns por concluir a integração! Se ainda tiver alguma dúvida, estou à disposição.", "final_prompt");
+    assistantBubble.classList.remove('hidden');
+}
+
 function playNextVideo() {
     assistantBubble.classList.add('hidden');
-    chatLogContainer.classList.add('hidden');
-    chatLog.innerHTML = '';
-    conversationHistory = [];
+    // Não esconder o chat log aqui para que ele persista
+    // chatLogContainer.classList.add('hidden');
+    // chatLog.innerHTML = '';
+    // conversationHistory = [];
     currentVideoIndex++;
     if (currentVideoIndex < playlist.length) {
         loadVideoByIndex(currentVideoIndex);
     } else {
-
-        learningTrail.classList.add('hidden'); // ESCONDE A TRILHA
-        assistantContainer.classList.add('hidden');
-        logoTopLeft.classList.add('hidden');
-
-        // CORREÇÃO: Lógica de finalização ajustada
-        assistantContainer.classList.add('hidden');
-        logoTopLeft.classList.add('hidden');
-        
-        const mainContainer = document.querySelector('#main-content .container');
-        
-        // Garante que o container principal esteja visível, se estiver escondido
-        if (mainContent.classList.contains('hidden')) {
-            mainContent.classList.remove('hidden');
-        }
-
-        // Limpa o conteúdo anterior (título do vídeo, player, etc.)
-        if (mainContainer) {
-            mainContainer.innerHTML = ''; 
-        }
-        
-        // Mostra a seção final e a anexa ao container limpo
-        finalSection.classList.remove('hidden');
-        if (mainContainer) {
-            mainContainer.appendChild(finalSection);
-        }
-        
-        // Define o link da prova no botão
-        proofLink.href = GOOGLE_DRIVE_LINK;
+        // Se a playlist acabou, chama a função de finalização
+        finishOnboarding();
     }
 }
 
@@ -267,52 +260,67 @@ function updateAssistantBubble(text, mode) {
     if (mode === "start") {
         content += `<button id="start-journey-btn">Vamos Começar!</button>`;
     } else if (mode === "prompt") {
-        content += `<div><button id="post-video-yes">Sim</button><button id="post-video-no">Não</button></div>`;
-    } else if (mode === "confirm_continue") { // NOVO: Modo para o botão simples de continuar
-        content += `<button id="confirm-continue-btn">Entendi, próximo tópico &rarr;</button>`;
+        content += `<div><button id="post-video-yes">Sim, tenho uma dúvida</button><button id="post-video-no">Não, tudo certo!</button></div>`;
+    } else if (mode === "confirm_continue") {
+        content += `<button id="confirm-continue-btn">Próximo Tópico &rarr;</button>`;
+    } else if (mode === "final_prompt") {
+        // Não adiciona botões, apenas mostra a mensagem e o chat continua visível.
     }
 
     assistantBubble.innerHTML = content;
     addBubbleEventListeners(mode);
 }
 
+function openChatInterface() {
+    // Move a assistente para o canto se ela não estiver lá
+    if (!assistantContainer.classList.contains('assistant-corner')) {
+        assistantContainer.classList.remove('assistant-centered');
+        assistantContainer.classList.add('assistant-corner');
+    }
+
+    const qaContent = `
+        <div id="qaSection">
+            <form id="questionForm" class="question-form">
+                <input type="text" id="questionInput" placeholder="Digite sua dúvida aqui..." autocomplete="off">
+                <button type="submit" id="sendButton">Enviar</button>
+            </form>
+            <button id="continueButton">Finalizar Integração &rarr;</button>
+        </div>`;
+    assistantBubble.innerHTML = qaContent;
+    addBubbleEventListeners("qa_inner"); // Re-adiciona os listeners para os novos botões
+    chatLogContainer.classList.remove('hidden');
+    document.getElementById('questionInput').focus();
+}
+
 function addBubbleEventListeners(mode) {
     if (mode === "start") {
         document.getElementById('start-journey-btn').addEventListener('click', startJourney);
     } else if (mode === "prompt") {
-        document.getElementById('post-video-yes').addEventListener('click', () => {
-            const qaContent = `
-                <div id="qaSection">
-                    <form id="questionForm" class="question-form">
-                        <input type="text" id="questionInput" placeholder="Digite sua dúvida aqui..." autocomplete="off">
-                        <button type="submit" id="sendButton">Enviar</button>
-                    </form>
-                    <button id="continueButton">Finalizar Integração &rarr;</button>
-                </div>`;
-            assistantBubble.innerHTML = qaContent;
-            addBubbleEventListeners("qa_inner");
-            chatLogContainer.classList.remove('hidden');
-            document.getElementById('questionInput').focus();
-        });
+        document.getElementById('post-video-yes').addEventListener('click', openChatInterface);
         document.getElementById('post-video-no').addEventListener('click', () => {
             if (player && typeof player.stopVideo === 'function') player.stopVideo();
             playNextVideo();
         });
     } else if (mode === "qa_inner") {
-        document.getElementById('questionForm').addEventListener('submit', (event) => {
-            event.preventDefault();
-            const questionInput = document.getElementById('questionInput');
-            const userQuestion = questionInput.value;
-            if (!userQuestion) return;
-            getAnswerFromAI(userQuestion);
-            questionInput.value = '';
-        });
-        // ALTERADO: O botão agora chama playNextVideo para ir para a tela final
-        document.getElementById('continueButton').addEventListener('click', () => {
-            if (player && typeof player.stopVideo === 'function') player.stopVideo();
-            playNextVideo();
-        });
-    } else if (mode === "confirm_continue") { // NOVO: Faz o novo botão funcionar
+        const form = document.getElementById('questionForm');
+        if (form) {
+            form.addEventListener('submit', (event) => {
+                event.preventDefault();
+                const questionInput = document.getElementById('questionInput');
+                const userQuestion = questionInput.value;
+                if (!userQuestion) return;
+                getAnswerFromAI(userQuestion);
+                questionInput.value = '';
+            });
+        }
+        const continueBtn = document.getElementById('continueButton');
+        if (continueBtn) {
+            continueBtn.addEventListener('click', () => {
+                if (player && typeof player.stopVideo === 'function') player.stopVideo();
+                playNextVideo();
+            });
+        }
+    } else if (mode === "confirm_continue") {
         document.getElementById('confirm-continue-btn').addEventListener('click', () => {
             if (player && typeof player.stopVideo === 'function') player.stopVideo();
             playNextVideo();
@@ -408,3 +416,13 @@ function getAnswerFromAI(question) {
         });
     });
 }
+
+// A interação agora é controlada pela classe 'interactive'
+siriAura.addEventListener('click', () => {
+    if (siriAura.classList.contains('interactive')) {
+        assistantBubble.classList.toggle('hidden');
+        if (!assistantBubble.classList.contains('hidden') && !document.getElementById('qaSection')) {
+            openChatInterface();
+        }
+    }
+});

@@ -30,9 +30,11 @@ GOOGLE_CREDENTIALS_PATH = os.getenv("GOOGLE_CREDENTIALS_PATH")
 SHEET_ID = '17S3BJeOwmjGnBo4IkbFvQvqVqjdLadB9xMBac9vTxtA'
 
 if GEMINI_API_KEY:
+    # Passa a chave da API diretamente para a configuração
     genai.configure(api_key=GEMINI_API_KEY)
+    print("-> Chave da API do Gemini configurada com sucesso.")
 else:
-    print("ERRO: Chave GEMINI_API_KEY não encontrada no ambiente.")
+    print("ERRO CRÍTICO: A variável de ambiente GOOGLE_API_KEY não foi encontrada.")
 
 EMBEDDING_MODEL = "models/text-embedding-004"
 
@@ -165,12 +167,14 @@ def generate_gemini_response(user_question, context_fact_object, history):
     """
     
     try:
-        # Usando o modelo que sabemos que funciona para sua conta
-        model = genai.GenerativeModel('gemini-2.0-flash-lite-001') 
+        print("-> Chamando a API do Gemini com o modelo 'gemini-2.5-flash'...")
+        model = genai.GenerativeModel('gemini-2.5-flash')
         response = model.generate_content(prompt)
+        print("-> Resposta da API do Gemini recebida com sucesso.")
         return response.text
     except Exception as e:
         print(f"ERRO CRÍTICO ao chamar a API do Gemini: {e}")
+        traceback.print_exc() # Adiciona o traceback completo para depuração
         return "Desculpe, estou com um problema para me conectar à minha inteligência. Tente novamente mais tarde."
 
 # --- ROTAS DA APLICAÇÃO ---
