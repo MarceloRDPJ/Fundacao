@@ -8,9 +8,9 @@
 }
 /* --- GERAL E LAYOUT --- */
 body {
-    font-family: 'Orbitron', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    background-color: #0a0a1a;
-    color: #00ffea;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-color: #1a1a2e; /* Grafite/Carvão */
+    color: #f0f0f0; /* Branco suave */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -18,31 +18,21 @@ body {
     margin: 0;
     padding: 20px 0;
     overflow-x: hidden;
-    text-shadow: 0 0 5px #00ffea88;
 }
 
 #main-content .container {
     text-align: center;
-    background: linear-gradient(145deg, rgba(10, 10, 26, 0.85), rgba(20, 20, 40, 0.85));
-    padding: 2px; /* Espessura da borda animada */
-    border-radius: 12px;
-    box-shadow: 0 8px 32px rgba(0, 255, 234, 0.1);
+    background-color: #2a2a3e; /* Tom mais claro para o container */
+    padding: 30px 40px;
+    border-radius: 16px;
+    border: 1px solid #4a4a6a;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
     width: 90%;
     max-width: 1000px;
-    color: #e0e0e0;
+    color: #f0f0f0;
     display: flex;
     flex-direction: column;
     align-items: center;
-    position: relative;
-    clip-path: polygon(0 10px, 10px 0, calc(100% - 10px) 0, 100% 10px, 100% calc(100% - 10px), calc(100% - 10px) 100%, 10px 100%, 0 calc(100% - 10px));
-}
-
-#main-content .container-inner {
-    background-color: #0a0a1a;
-    padding: 30px 40px;
-    border-radius: 10px;
-    width: 100%;
-    height: 100%;
 }
 
 .hidden {
@@ -127,68 +117,46 @@ body {
     font-weight: 500;
 }
 
-/* --- Aura (High-Tech AI Style) --- */
-@keyframes pulse-ring {
-    0% { transform: scale(0.33); opacity: 1; }
-    80%, 100% { opacity: 0; }
+/* --- Animações --- */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
-@keyframes pulse-dot {
-    0% { transform: scale(0.8); }
-    50% { transform: scale(1); }
-    100% { transform: scale(0.8); }
+
+/* Adiciona animação de entrada ao contêiner principal */
+#main-content .container {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+/* --- Aura (Professional Style) --- */
+@keyframes subtle-pulse {
+    0% { box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(0, 123, 255, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(0, 123, 255, 0); }
 }
 
 .siri-aura {
-    width: 80px;
-    height: 80px;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background-color: #007bff; /* Azul corporativo */
     position: relative;
     margin: 20px auto 0 auto;
     cursor: default;
+    transition: transform 0.3s;
 }
-.siri-aura::before {
-    content: '';
-    position: relative;
-    display: block;
-    width: 300%;
-    height: 300%;
-    box-sizing: border-box;
-    margin-left: -100%;
-    margin-top: -100%;
-    border-radius: 45px;
-    background-color: #01a4e9;
-    animation: pulse-ring 1.25s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
-}
-.siri-aura::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    display: block;
-    width: 100%;
-    height: 100%;
-    background-color: white;
-    border-radius: 15px;
-    box-shadow: 0 0 8px rgba(0,0,0,0.3);
-    animation: pulse-dot 1.25s cubic-bezier(0.455, 0.03, 0.515, 0.955) -.4s infinite;
-}
-
 
 .siri-aura.interactive {
     cursor: pointer;
+    animation: subtle-pulse 2s infinite;
 }
 
-.siri-aura.interactive:hover::before {
-    animation-play-state: paused;
-}
-.siri-aura.interactive:hover::after {
-    transform: scale(1.2);
+.siri-aura.interactive:hover {
+    transform: scale(1.1);
 }
 
-.siri-aura.thinking::before {
-    animation-duration: 1s;
-}
-.siri-aura.thinking::after {
-    animation-duration: 1s;
+.siri-aura.thinking {
+    animation: subtle-pulse 1s infinite;
 }
 
 .assistant-corner .speech-bubble {
@@ -252,45 +220,43 @@ body {
 /* --- CONTEÚDO DA JORNADA (CHAT, BOTÕES, ETC.) --- */
 .status {
     margin-top: 10px;
-    color: #8257e6; /* Roxo como cor secundária */
+    color: #007bff;
     font-weight: 500;
 }
 
 .status.finalizado {
-    color: #00ffea;
+    color: #f0f0f0;
 }
 
 .chat-log-container {
     margin-top: 16px;
-    background-color: rgba(10, 10, 26, 0.5);
-    border: 1px solid #8257e6;
-    border-radius: 8px;
+    background-color: #1a1a2e;
+    border: 1px solid #4a4a6a;
+    border-radius: 12px;
     padding: 16px;
     min-height: 150px;
     max-height: 300px;
     width: 100%;
     overflow-y: auto;
     text-align: left;
-    box-shadow: inset 0 0 10px #8257e644;
 }
 #chatLog p {
     margin: 0 0 10px 0;
     padding: 10px 14px;
-    border-radius: 12px;
+    border-radius: 18px;
     word-wrap: break-word;
     max-width: 85%;
     line-height: 1.5;
-    text-shadow: none;
 }
 #chatLog .user-message {
-    background-color: #8257e6;
-    color: #e0e0e0 !important;
+    background-color: #007bff;
+    color: white !important;
     margin-left: auto;
     border-bottom-right-radius: 4px;
 }
 #chatLog .bot-message {
-    background-color: #2a2a3a;
-    color: #e0e0e0 !important;
+    background-color: #3a3a5a;
+    color: #f0f0f0 !important;
     margin-right: auto;
     border-bottom-left-radius: 4px;
 }
@@ -304,41 +270,36 @@ body {
 }
 .button-link {
     display: inline-block;
-    background-color: #00ffea;
-    color: #0a0a1a !important;
+    background-color: #007bff;
+    color: white !important;
     text-decoration: none;
     padding: 12px 28px;
     font-size: 16px;
-    font-weight: 700;
-    border-radius: 4px;
+    font-weight: 600;
+    border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s;
-    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%);
 }
 .button-link:hover {
-    background-color: #8257e6;
-    color: #00ffea !important;
+    background-color: #0056b3;
     transform: translateY(-2px);
-    box-shadow: 0 0 20px #8257e6;
 }
 
 /* Estilos gerais para botões */
 .speech-bubble button, #qaSection button {
-    background-color: #00ffea;
-    color: #0a0a1a;
-    border: 1px solid #00ffea;
+    background-color: #007bff;
+    color: white;
+    border: none;
     padding: 10px 20px;
     font-size: 15px;
-    font-weight: 700;
-    border-radius: 4px;
+    font-weight: 600;
+    border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s;
     margin: 5px;
 }
 .speech-bubble button:hover, #qaSection button:hover {
-    background-color: #8257e6;
-    color: #00ffea;
-    border-color: #8257e6;
+    background-color: #0056b3;
     transform: translateY(-1px);
 }
 .inline-form button {
@@ -348,8 +309,8 @@ body {
 
 /* --- NOVO: Estilos para a caixa de credenciais --- */
 .credentials-box {
-    background-color: transparent;
-    border: 1px dashed #8257e6;
+    background-color: #1a1a2e;
+    border: 1px dashed #4a4a6a;
     border-radius: 8px;
     padding: 15px;
     margin: 15px 0;
@@ -357,11 +318,11 @@ body {
 }
 .credential-item span {
     font-weight: bold;
-    color: #e0e0e0;
+    color: #f0f0f0;
 }
 .credential-item code {
-    background-color: #2a2a3a;
-    color: #00ffea;
+    background-color: #3a3a5a;
+    color: #f0f0f0;
     padding: 5px 8px;
     border-radius: 4px;
     font-family: 'Courier New', Courier, monospace;
@@ -374,27 +335,20 @@ body {
     top: 50%;
     transform: translateY(-50%);
     width: 280px;
-    background: rgba(10, 10, 26, 0.85);
-    padding: 2px;
-    border-radius: 12px;
-    box-shadow: 0 8px 32px rgba(0, 255, 234, 0.1);
+    background: #2a2a3e;
+    padding: 20px 25px;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    border: 1px solid #4a4a6a;
     z-index: 998;
     transition: opacity 0.5s, transform 0.5s;
-    clip-path: polygon(0 10px, 10px 0, calc(100% - 10px) 0, 100% 10px, 100% calc(100% - 10px), calc(100% - 10px) 100%, 10px 100%, 0 calc(100% - 10px));
-}
-#learning-trail .trail-inner {
-    background-color: #0a0a1a;
-    padding: 20px 25px;
-    border-radius: 10px;
-    width: 100%;
-    height: 100%;
 }
 #learning-trail h2 {
     margin: 0 0 15px 0;
-    color: #00ffea;
-    font-weight: 700;
+    color: #f0f0f0;
+    font-weight: 600;
     text-align: center;
-    border-bottom: 1px solid #8257e6;
+    border-bottom: 1px solid #4a4a6a;
     padding-bottom: 10px;
 }
 #trail-list {
@@ -405,10 +359,10 @@ body {
 .trail-item {
     padding: 12px 0 12px 40px;
     position: relative;
-    color: #e0e0e0a0;
+    color: #f0f0f0a0;
     font-weight: 500;
     transition: all 0.3s ease;
-    border-bottom: 1px solid #8257e644;
+    border-bottom: 1px solid #4a4a6a44;
 }
 .trail-item::before {
     content: '';
@@ -420,23 +374,22 @@ body {
     height: 24px;
     border-radius: 50%;
     background-color: transparent;
-    border: 2px solid #8257e6;
+    border: 2px solid #007bff;
     transition: all 0.3s ease;
 }
 .trail-item.active {
-    color: #00ffea;
+    color: #ffffff;
     font-weight: 700;
 }
 .trail-item.active::before {
-    background-color: #00ffea;
-    border-color: #00ffea;
-    box-shadow: 0 0 10px #00ffea;
+    background-color: #007bff;
+    border-color: #007bff;
 }
 .trail-item.completed::before {
     content: '✔';
-    background-color: #8257e6;
-    border-color: #8257e6;
-    color: #0a0a1a;
+    background-color: #28a745;
+    border-color: #28a745;
+    color: white;
     font-size: 16px;
     display: flex;
     align-items: center;
