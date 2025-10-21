@@ -21,7 +21,6 @@ CORS(app)
 
 # --- CONFIGURAÇÃO DO GOOGLE GEMINI ---
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-APPS_SCRIPT_URL = os.getenv("APPS_SCRIPT_URL")
 
 SCOPES = [
     'https://www.googleapis.com/auth/spreadsheets',
