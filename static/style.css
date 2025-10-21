@@ -108,6 +108,48 @@ body {
     margin-bottom: 20px;
 }
 
+#status-display {
+    background-color: rgba(10, 25, 47, 0.85); /* Azul escuro semi-transparente */
+    border: 1px solid var(--primary-blue);
+    border-radius: 12px;
+    padding: 12px 20px;
+    margin-top: 20px;
+    color: var(--text-primary);
+    font-family: 'Courier New', Courier, monospace; /* Fonte monoespaçada para um look "tech" */
+    width: 100%;
+    max-width: 90%;
+    box-shadow: 0 0 25px rgba(0, 191, 255, 0.4);
+    backdrop-filter: blur(8px); /* Efeito de vidro fosco */
+    transition: all 0.3s ease;
+}
+
+#progress-bar-container {
+    width: 100%;
+    background-color: rgba(0, 31, 63, 0.7); /* Azul mais escuro para o fundo da barra */
+    border-radius: 5px;
+    height: 10px;
+    margin-bottom: 8px;
+    overflow: hidden;
+    border: 1px solid #005f7f;
+}
+
+#progress-bar {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, #1E90FF, #00BFFF);
+    border-radius: 5px;
+    transition: width 0.5s linear; /* Transição suave */
+    box-shadow: 0 0 10px #00BFFF;
+}
+
+#timer {
+    font-size: 1rem;
+    text-align: right;
+    color: var(--primary-blue);
+    font-weight: 600;
+    text-shadow: 0 0 5px var(--primary-blue);
+}
+
 /* --- ASSISTENTE --- */
 #assistant-container {
     position: fixed;
