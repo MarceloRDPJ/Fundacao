@@ -274,26 +274,10 @@ function finishOnboarding() {
     if (learningTrail) learningTrail.style.display = 'none';
     if (leftSidebar) leftSidebar.style.display = 'none';
     if (status) status.style.display = 'none';
+    if (assistantContainer) assistantContainer.style.display = 'none';
 
     // Garante que a seção final seja exibida corretamente com seu estilo flex
     finalSection.classList.remove('hidden');
-}
-
-function formatTime(seconds) {
-    const minutes = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-}
-
-function updateProgressBar() {
-    if (!player || typeof player.getCurrentTime !== 'function') return;
-
-    const currentTime = player.getCurrentTime();
-    const duration = player.getDuration();
-    const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
-
-    document.getElementById('progress-bar').style.width = `${progress}%`;
-    document.getElementById('timer').textContent = `${formatTime(currentTime)} / ${formatTime(duration)}`;
     finalSection.style.display = 'flex'; // O CSS define 'display: flex' para o layout
     proofLink.href = GOOGLE_DRIVE_LINK;
 
@@ -321,6 +305,23 @@ function updateProgressBar() {
             requestAnimationFrame(frame);
         }
     }());
+}
+
+function formatTime(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+}
+
+function updateProgressBar() {
+    if (!player || typeof player.getCurrentTime !== 'function') return;
+
+    const currentTime = player.getCurrentTime();
+    const duration = player.getDuration();
+    const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
+
+    document.getElementById('progress-bar').style.width = `${progress}%`;
+    document.getElementById('timer').textContent = `${formatTime(currentTime)} / ${formatTime(duration)}`;
 }
 
 function playNextVideo() {
