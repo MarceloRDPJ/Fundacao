@@ -1,10 +1,8 @@
 // --- CONFIGURAÇÃO INICIAL ---
-const mainContent = document.getElementById('main-content');
 const assistantContainer = document.getElementById('assistant-container');
 const assistantBubble = document.getElementById('assistant-bubble');
 const nameInput = document.getElementById('name-input');
 const submitNameBtn = document.getElementById('submit-name-btn');
-const logoTopLeft = document.getElementById('logo-top-left');
 const siriAura = document.querySelector('.siri-aura');
 
 const videoTitle = document.getElementById('videoTitle');
