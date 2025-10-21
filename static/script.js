@@ -32,7 +32,7 @@ let player;
 let userName = "";
 let conversationHistory = [];
 const MAX_HISTORY_LENGTH = 6;
-let ptBrVoices = [];
+let progressInterval = null;
 
 // --- LÓGICA DE VOZ DO NAVEGADOR ---
 let celineVoice = null;
@@ -223,9 +223,9 @@ function loadVideoByIndex(index) {
 }
 
 function onPlayerReady(event) {
-    status.textContent = "Status: Reproduzindo vídeo...";
-    forceIframeSize(); // <-- ADICIONE AQUI
-    event.target.playVideo(); // Garante que o vídeo toque após o 'ready'
+    document.getElementById('status-display').classList.remove('hidden');
+    forceIframeSize();
+    event.target.playVideo();
 }
 
 function forceIframeSize() {
@@ -240,23 +240,21 @@ function forceIframeSize() {
 }
 
 function onPlayerStateChange(event) {
+    if (event.data === YT.PlayerState.PLAYING && !progressInterval) {
+        progressInterval = setInterval(updateProgressBar, 1000);
+    } else if (event.data !== YT.PlayerState.PLAYING && progressInterval) {
+        clearInterval(progressInterval);
+        progressInterval = null;
+    }
+
     if (event.data === YT.PlayerState.ENDED) {
-        forceIframeSize(); // Garante que o iframe mantenha o tamanho correto
-        status.textContent = "Status: Vídeo concluído.";
-        siriAura.classList.remove('interactive'); // Desativa a aura por padrão
-
-        //Verifica se o vídeo atual é o último da playlist
         const isLastVideo = currentVideoIndex === playlist.length - 1;
-
         if (isLastVideo) {
-            // Se for o último vídeo, mostra o prompt de Q&A completo e ativa a aura
             updateAssistantBubble("Ficou com alguma dúvida durante a Integração?", "prompt");
             siriAura.classList.add('interactive');
         } else {
-            // Se não for o último, mostra apenas uma confirmação para continuar
             updateAssistantBubble("Tudo certo? Clique abaixo para ir ao próximo tópico da integração.", "confirm_continue");
         }
-        
         assistantBubble.classList.remove('hidden');
     }
 }
@@ -279,6 +277,23 @@ function finishOnboarding() {
 
     // Garante que a seção final seja exibida corretamente com seu estilo flex
     finalSection.classList.remove('hidden');
+}
+
+function formatTime(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+}
+
+function updateProgressBar() {
+    if (!player || typeof player.getCurrentTime !== 'function') return;
+
+    const currentTime = player.getCurrentTime();
+    const duration = player.getDuration();
+    const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
+
+    document.getElementById('progress-bar').style.width = `${progress}%`;
+    document.getElementById('timer').textContent = `${formatTime(currentTime)} / ${formatTime(duration)}`;
     finalSection.style.display = 'flex'; // O CSS define 'display: flex' para o layout
     proofLink.href = GOOGLE_DRIVE_LINK;
 
