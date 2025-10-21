@@ -269,10 +269,12 @@ function finishOnboarding() {
     const learningTrail = document.getElementById('learning-trail');
     const status = document.getElementById('status');
     const assistantContainer = document.getElementById('assistant-container');
+    const leftSidebar = document.getElementById('left-sidebar');
 
     if (videoPlayerContainer) videoPlayerContainer.style.display = 'none';
     if (videoTitle) videoTitle.style.display = 'none';
     if (learningTrail) learningTrail.style.display = 'none';
+    if (leftSidebar) leftSidebar.style.display = 'none';
     if (status) status.style.display = 'none';
 
     // Garante que a seção final seja exibida corretamente com seu estilo flex
