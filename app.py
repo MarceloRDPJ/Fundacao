@@ -3,6 +3,8 @@ import json
 import unicodedata
 import traceback
 import re
+import subprocess
+import sys
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 import google.generativeai as genai
@@ -103,11 +105,31 @@ def expand_query_with_synonyms(query, synonym_map):
 
 # --- CARREGANDO A BASE DE CONHECIMENTO ---
 def load_knowledge_base():
+    embedding_file_path = 'knowledge_base_com_embeddings.json'
+    if not os.path.exists(embedding_file_path):
+        print(f"AVISO: O arquivo '{embedding_file_path}' não foi encontrado. Executando o script 'criar_embeddings.py' para gerá-lo...")
+        try:
+            # Garante que o Python executado seja o mesmo que está executando o app
+            python_executable = sys.executable
+            result = subprocess.run([python_executable, 'criar_embeddings.py'], check=True, capture_output=True, text=True)
+            print("-> SUCESSO: O script 'criar_embeddings.py' foi executado.")
+            print(result.stdout)
+        except subprocess.CalledProcessError as e:
+            print(f"ERRO CRÍTICO ao executar 'criar_embeddings.py': {e}")
+            print(f"Output do erro:\n{e.stderr}")
+            return {"fatos": []} # Retorna uma base vazia em caso de falha
+        except FileNotFoundError:
+            print("ERRO CRÍTICO: 'python' não encontrado no PATH. Não foi possível executar o script de embeddings.")
+            return {"fatos": []}
+
     try:
-        with open('knowledge_base_com_embeddings.json', 'r', encoding='utf-8') as f:
+        with open(embedding_file_path, 'r', encoding='utf-8') as f:
             return json.load(f)
     except FileNotFoundError:
-        print("ERRO: O arquivo 'knowledge_base_com_embeddings.json' não foi encontrado.")
+        print(f"ERRO: Mesmo após a tentativa de criação, o arquivo '{embedding_file_path}' não foi encontrado.")
+        return {"fatos": []}
+    except json.JSONDecodeError:
+        print(f"ERRO: O arquivo '{embedding_file_path}' está corrompido ou em um formato JSON inválido.")
         return {"fatos": []}
     
 # --- CARREGANDO OS DADOS EXTERNOS AO INICIAR ---
