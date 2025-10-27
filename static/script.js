@@ -3,7 +3,6 @@ const assistantContainer = document.getElementById('assistant-container');
 const assistantBubble = document.getElementById('assistant-bubble');
 const nameInput = document.getElementById('name-input');
 const submitNameBtn = document.getElementById('submit-name-btn');
-const siriAura = document.querySelector('.siri-aura');
 
 const videoTitle = document.getElementById('videoTitle');
 const status = document.getElementById('status');
@@ -32,7 +31,7 @@ let conversationHistory = [];
 const MAX_HISTORY_LENGTH = 6;
 let progressInterval = null;
 
-// --- LÓGICA DE VOZ DO NAVEGADOR ---
+// --- LÓGICA DE VOZ DO NAVEGADORA ---
 let celineVoice = null;
 
 function loadVoices() {
@@ -249,7 +248,6 @@ function onPlayerStateChange(event) {
         const isLastVideo = currentVideoIndex === playlist.length - 1;
         if (isLastVideo) {
             updateAssistantBubble("Ficou com alguma dúvida durante a Integração?", "prompt");
-            siriAura.classList.add('interactive');
         } else {
             updateAssistantBubble("Tudo certo? Clique abaixo para ir ao próximo tópico da integração.", "confirm_continue");
         }
@@ -460,7 +458,6 @@ function getAnswerFromAI(question) {
     if (sendButton) sendButton.disabled = true;
     if (continueButton) continueButton.disabled = true;
     status.textContent = "Pensando...";
-    siriAura.classList.add('thinking'); // Adiciona a animação de "pensando"
     addToChatLog('user', question);
 
     fetch('/ask', {
@@ -478,7 +475,6 @@ function getAnswerFromAI(question) {
         const answerText = data.answer;
         
         addToChatLog('bot', answerText, () => {
-            siriAura.classList.remove('thinking'); // Remove a animação de "pensando"
             speak(answerText, () => {
                 if (sendButton) sendButton.disabled = false;
                 if (continueButton) continueButton.disabled = false;
@@ -493,7 +489,6 @@ function getAnswerFromAI(question) {
         console.error('Erro ao se comunicar com a IA:', error);
         const errorMessage = "Desculpe, estou com problemas de conexão...";
         addToChatLog('bot', errorMessage, () => {
-            siriAura.classList.remove('thinking'); // Remove a animação de "pensando"
             if (sendButton) sendButton.disabled = false;
             if (continueButton) continueButton.disabled = false;
             status.textContent = "Status: Erro de comunicação.";
@@ -501,12 +496,123 @@ function getAnswerFromAI(question) {
     });
 }
 
-// A interação agora é controlada pela classe 'interactive'
-siriAura.addEventListener('click', () => {
-    if (siriAura.classList.contains('interactive')) {
-        assistantBubble.classList.toggle('hidden');
-        if (!assistantBubble.classList.contains('hidden') && !document.getElementById('qaSection')) {
-            openChatInterface();
+
+(function() {
+    const canvas = document.getElementById('neuralCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+
+    let canvasSize = Math.min(window.innerWidth, window.innerHeight) * 0.5;
+    canvas.width = canvasSize;
+    canvas.height = canvasSize;
+
+    let centerX = canvas.width / 2;
+    let centerY = canvas.height / 2;
+    let sphereRadius = canvas.width / 2.5;
+
+    const PARTICLE_COUNT = 200;
+    const MAX_LINK_DISTANCE = 100;
+    const PARTICLE_BASE_SPEED = 0.3;
+    const PARTICLE_RADIUS_MIN = 1;
+    const PARTICLE_RADIUS_MAX = 2.5;
+
+    const BASE_HUE = 180; // Ciano
+
+    let particles = [];
+    let mouse = { x: null, y: null, radius: 150 };
+
+    class Particle {
+        constructor() {
+            const angle = Math.random() * Math.PI * 2;
+            const radius = Math.random() * sphereRadius;
+            this.x = centerX + Math.cos(angle) * radius;
+            this.y = centerY + Math.sin(angle) * radius;
+
+            const speed = Math.random() * PARTICLE_BASE_SPEED + 0.1;
+            this.vx = (Math.random() - 0.5) * speed;
+            this.vy = (Math.random() - 0.5) * speed;
+
+            this.radius = Math.random() * (PARTICLE_RADIUS_MAX - PARTICLE_RADIUS_MIN) + PARTICLE_RADIUS_MIN;
+
+            const lightness = Math.random() * 30 + 60;
+            this.color = `hsla(${BASE_HUE}, 100%, ${lightness}%, 0.9)`;
+            this.baseRadius = this.radius;
+        }
+
+        draw() {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+            ctx.fillStyle = this.color;
+            ctx.fill();
+        }
+
+        update() {
+            this.x += this.vx;
+            this.y += this.vy;
+
+            const distFromCenter = Math.sqrt((this.x - centerX)**2 + (this.y - centerY)**2);
+
+            if (distFromCenter > sphereRadius) {
+                const angle = Math.atan2(this.y - centerY, this.x - centerX);
+                this.vx = -Math.cos(angle) * (Math.random() * PARTICLE_BASE_SPEED + 0.1);
+                this.vy = -Math.sin(angle) * (Math.random() * PARTICLE_BASE_SPEED + 0.1);
+            }
         }
     }
-});
+
+    function init() {
+        particles = [];
+        for (let i = 0; i < PARTICLE_COUNT; i++) {
+            particles.push(new Particle());
+        }
+    }
+
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        for (let i = 0; i < particles.length; i++) {
+            for (let j = i + 1; j < particles.length; j++) {
+                const p1 = particles[i];
+                const p2 = particles[j];
+                const distance = Math.sqrt((p1.x - p2.x)**2 + (p1.y - p2.y)**2);
+
+                if (distance < MAX_LINK_DISTANCE) {
+                    const opacity = 1 - (distance / MAX_LINK_DISTANCE);
+                    ctx.beginPath();
+                    ctx.moveTo(p1.x, p1.y);
+                    ctx.lineTo(p2.x, p2.y);
+                    ctx.strokeStyle = `hsla(${BASE_HUE}, 100%, 70%, ${opacity * 0.7})`;
+                    ctx.lineWidth = 1;
+                    ctx.stroke();
+                }
+            }
+        }
+
+        particles.forEach(p => {
+            p.update();
+            p.draw();
+        });
+
+        requestAnimationFrame(animate);
+    }
+
+    window.addEventListener('resize', () => {
+        canvasSize = Math.min(window.innerWidth, window.innerHeight) * 0.5;
+        canvas.width = canvasSize;
+        canvas.height = canvasSize;
+
+        centerX = canvas.width / 2;
+        centerY = canvas.height / 2;
+        sphereRadius = canvas.width / 2.5;
+
+        init();
+    });
+
+    init();
+    animate();
+
+    // Adiciona o event listener de clique ao canvas
+    canvas.addEventListener('click', () => {
+        openChatInterface();
+    });
+})();
