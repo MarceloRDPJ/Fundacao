@@ -317,22 +317,26 @@ body {
     gap: 15px;
 }
 
-canvas {
+#neuralCanvas {
     display: block;
-    /* Efeito pulsante (Método 1 do prompt) */
+    /* Tamanho da bola */
+    width: 150px;
+    height: 150px;
+    border-radius: 50%; /* Garante que o brilho e a forma sejam redondos */
     animation: pulseGlow 4s infinite ease-in-out alternate;
+    position: relative;
+    z-index: 10;
 }
 
+/* Chaves de animação para o brilho pulsante da "bola" */
 @keyframes pulseGlow {
-    0% {
-        /* Filtro de brilho suave */
-        filter: drop-shadow(0 0 10px rgba(0, 255, 200, 0.3)) saturate(1.2);
-        opacity: 0.9;
+    from {
+        filter: drop-shadow(0 0 8px hsla(170, 100%, 50%, 0.6))
+                drop-shadow(0 0 12px hsla(170, 100%, 50%, 0.4));
     }
-    100% {
-        /* Aumenta o brilho e a saturação */
-        filter: drop-shadow(0 0 20px rgba(0, 255, 200, 0.7)) saturate(1.5);
-        opacity: 1;
+    to {
+        filter: drop-shadow(0 0 12px hsla(170, 100%, 60%, 0.8))
+                drop-shadow(0 0 20px hsla(170, 100%, 60%, 0.6));
     }
 }
 

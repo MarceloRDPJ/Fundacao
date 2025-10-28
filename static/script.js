@@ -248,8 +248,10 @@ function onPlayerStateChange(event) {
         const isLastVideo = currentVideoIndex === playlist.length - 1;
         if (isLastVideo) {
             updateAssistantBubble("Ficou com alguma dúvida durante a Integração?", "prompt");
+            if (window.setAssistantAnimationState) window.setAssistantAnimationState('interactive');
         } else {
             updateAssistantBubble("Tudo certo? Clique abaixo para ir ao próximo tópico da integração.", "confirm_continue");
+            if (window.setAssistantAnimationState) window.setAssistantAnimationState('idle');
         }
         assistantBubble.classList.remove('hidden');
     }
@@ -321,6 +323,7 @@ function updateProgressBar() {
 }
 
 function playNextVideo() {
+    if (window.setAssistantAnimationState) window.setAssistantAnimationState('idle');
     assistantBubble.classList.add('hidden');
     // Não esconder o chat log aqui para que ele persista
     // chatLogContainer.classList.add('hidden');
@@ -458,6 +461,7 @@ function getAnswerFromAI(question) {
     if (sendButton) sendButton.disabled = true;
     if (continueButton) continueButton.disabled = true;
     status.textContent = "Pensando...";
+    if (window.setAssistantAnimationState) window.setAssistantAnimationState('thinking');
     addToChatLog('user', question);
 
     fetch('/ask', {
@@ -479,6 +483,7 @@ function getAnswerFromAI(question) {
                 if (sendButton) sendButton.disabled = false;
                 if (continueButton) continueButton.disabled = false;
                 status.textContent = "Status: Faça outra pergunta ou clique em continuar.";
+                if (window.setAssistantAnimationState) window.setAssistantAnimationState('interactive');
                 if(document.getElementById('questionInput')) {
                     document.getElementById('questionInput').focus();
                 }
@@ -492,6 +497,7 @@ function getAnswerFromAI(question) {
             if (sendButton) sendButton.disabled = false;
             if (continueButton) continueButton.disabled = false;
             status.textContent = "Status: Erro de comunicação.";
+            if (window.setAssistantAnimationState) window.setAssistantAnimationState('interactive'); // Reseta o estado em caso de erro
         });
     });
 }
@@ -499,44 +505,69 @@ function getAnswerFromAI(question) {
 
 (function() {
     const canvas = document.getElementById('neuralCanvas');
-    if (!canvas) return;
+    if (!canvas) return; // Sair se o canvas não existir
     const ctx = canvas.getContext('2d');
 
-    let canvasSize = Math.min(window.innerWidth, window.innerHeight) * 0.5;
+    // O tamanho do canvas é definido via CSS (150px)
+    const canvasSize = 150;
     canvas.width = canvasSize;
     canvas.height = canvasSize;
 
     let centerX = canvas.width / 2;
     let centerY = canvas.height / 2;
-    let sphereRadius = canvas.width / 2.5;
+    let sphereRadius = canvas.width / 2.2;
 
-    const PARTICLE_COUNT = 200;
-    const MAX_LINK_DISTANCE = 100;
-    const PARTICLE_BASE_SPEED = 0.3;
-    const PARTICLE_RADIUS_MIN = 1;
-    const PARTICLE_RADIUS_MAX = 2.5;
-
-    const BASE_HUE = 180; // Ciano
+    // Constantes da animação
+    const PARTICLE_COUNT = 60;
+    const MAX_LINK_DISTANCE = 40;
+    const MAX_LINK_DISTANCE_SQ = MAX_LINK_DISTANCE * MAX_LINK_DISTANCE;
+    const PARTICLE_BASE_SPEED = 0.4;
+    const PARTICLE_RADIUS = 1.3;
+    const BASE_HUE = 170;
 
     let particles = [];
-    let mouse = { x: null, y: null, radius: 150 };
+    let animationState = 'idle'; // Estados: 'idle', 'thinking', 'interactive'
+    let particleSpeedMultiplier = 1;
+
+    // Função global para controlar o estado da animação
+    window.setAssistantAnimationState = (newState) => {
+        if (!['idle', 'thinking', 'interactive'].includes(newState)) {
+            newState = 'idle'; // Estado padrão de segurança
+        }
+        animationState = newState;
+
+        switch (newState) {
+            case 'thinking':
+                particleSpeedMultiplier = 4; // Partículas mais rápidas
+                canvas.style.cursor = 'default';
+                break;
+            case 'interactive':
+                particleSpeedMultiplier = 1; // Velocidade normal
+                canvas.style.cursor = 'pointer';
+                break;
+            case 'idle':
+            default:
+                particleSpeedMultiplier = 1; // Velocidade normal
+                canvas.style.cursor = 'default';
+                break;
+        }
+    };
 
     class Particle {
         constructor() {
             const angle = Math.random() * Math.PI * 2;
-            const radius = Math.random() * sphereRadius;
-            this.x = centerX + Math.cos(angle) * radius;
-            this.y = centerY + Math.sin(angle) * radius;
+            const distance = Math.random() * sphereRadius;
+            this.x = centerX + Math.cos(angle) * distance;
+            this.y = centerY + Math.sin(angle) * distance;
 
             const speed = Math.random() * PARTICLE_BASE_SPEED + 0.1;
-            this.vx = (Math.random() - 0.5) * speed;
-            this.vy = (Math.random() - 0.5) * speed;
+            const directionAngle = Math.random() * Math.PI * 2;
+            this.vx = Math.cos(directionAngle) * speed;
+            this.vy = Math.sin(directionAngle) * speed;
 
-            this.radius = Math.random() * (PARTICLE_RADIUS_MAX - PARTICLE_RADIUS_MIN) + PARTICLE_RADIUS_MIN;
-
-            const lightness = Math.random() * 30 + 60;
-            this.color = `hsla(${BASE_HUE}, 100%, ${lightness}%, 0.9)`;
-            this.baseRadius = this.radius;
+            this.radius = PARTICLE_RADIUS * (Math.random() * 0.5 + 0.75);
+            const lightness = Math.random() * 20 + 70;
+            this.color = `hsla(${BASE_HUE + (Math.random() * 20 - 10)}, 100%, ${lightness}%, 0.9)`;
         }
 
         draw() {
@@ -547,15 +578,22 @@ function getAnswerFromAI(question) {
         }
 
         update() {
-            this.x += this.vx;
-            this.y += this.vy;
+            // Aplica o multiplicador de velocidade baseado no estado
+            this.x += this.vx * particleSpeedMultiplier;
+            this.y += this.vy * particleSpeedMultiplier;
 
-            const distFromCenter = Math.sqrt((this.x - centerX)**2 + (this.y - centerY)**2);
+            // Lógica de colisão com a borda da esfera
+            const dist = Math.sqrt(Math.pow(this.x - centerX, 2) + Math.pow(this.y - centerY, 2));
+            if (dist + this.radius > sphereRadius) {
+                const normX = (this.x - centerX) / dist;
+                const normY = (this.y - centerY) / dist;
+                const dot = this.vx * normX + this.vy * normY;
 
-            if (distFromCenter > sphereRadius) {
-                const angle = Math.atan2(this.y - centerY, this.x - centerX);
-                this.vx = -Math.cos(angle) * (Math.random() * PARTICLE_BASE_SPEED + 0.1);
-                this.vy = -Math.sin(angle) * (Math.random() * PARTICLE_BASE_SPEED + 0.1);
+                this.vx -= 2 * dot * normX;
+                this.vy -= 2 * dot * normY;
+
+                this.x = centerX + normX * (sphereRadius - this.radius);
+                this.y = centerY + normY * (sphereRadius - this.radius);
             }
         }
     }
@@ -570,23 +608,30 @@ function getAnswerFromAI(question) {
     function animate() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        for (let i = 0; i < particles.length; i++) {
-            for (let j = i + 1; j < particles.length; j++) {
-                const p1 = particles[i];
-                const p2 = particles[j];
-                const distance = Math.sqrt((p1.x - p2.x)**2 + (p1.y - p2.y)**2);
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = `hsla(${BASE_HUE}, 100%, 60%, 0.6)`;
 
-                if (distance < MAX_LINK_DISTANCE) {
+        for (let i = 0; i < particles.length; i++) {
+            const p1 = particles[i];
+            for (let j = i + 1; j < particles.length; j++) {
+                const p2 = particles[j];
+                const distanceSq = Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2);
+
+                if (distanceSq < MAX_LINK_DISTANCE_SQ) {
+                    const distance = Math.sqrt(distanceSq);
                     const opacity = 1 - (distance / MAX_LINK_DISTANCE);
+
                     ctx.beginPath();
                     ctx.moveTo(p1.x, p1.y);
                     ctx.lineTo(p2.x, p2.y);
-                    ctx.strokeStyle = `hsla(${BASE_HUE}, 100%, 70%, ${opacity * 0.7})`;
-                    ctx.lineWidth = 1;
+                    ctx.strokeStyle = `hsla(${BASE_HUE}, 100%, 70%, ${opacity * 0.6})`;
+                    ctx.lineWidth = 1.0;
                     ctx.stroke();
                 }
             }
         }
+
+        ctx.shadowBlur = 0;
 
         particles.forEach(p => {
             p.update();
@@ -596,23 +641,16 @@ function getAnswerFromAI(question) {
         requestAnimationFrame(animate);
     }
 
-    window.addEventListener('resize', () => {
-        canvasSize = Math.min(window.innerWidth, window.innerHeight) * 0.5;
-        canvas.width = canvasSize;
-        canvas.height = canvasSize;
-
-        centerX = canvas.width / 2;
-        centerY = canvas.height / 2;
-        sphereRadius = canvas.width / 2.5;
-
-        init();
+    // Adiciona o listener de clique para interatividade
+    canvas.addEventListener('click', () => {
+        if (animationState === 'interactive') {
+            openChatInterface(); // Chama a função global
+        }
     });
 
+    // Inicia a animação
     init();
     animate();
-
-    // Adiciona o event listener de clique ao canvas
-    canvas.addEventListener('click', () => {
-        openChatInterface();
-    });
+    // Define o estado inicial para garantir consistência
+    window.setAssistantAnimationState('idle');
 })();
